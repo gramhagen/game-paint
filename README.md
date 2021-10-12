@@ -4,7 +4,7 @@
 
 - Build server docker image
 
-    docker build -t image-generation -f server/Dockerfile .
+        sudo docker build -t image-generation -f server/Dockerfile .
 
 
 - Run server locally
