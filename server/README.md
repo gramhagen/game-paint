@@ -16,7 +16,7 @@ sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/
 sudo apt-get update
 sudo apt-get install -y cuda
 
-# Setup Docker
+# Setup Docker with nvidia Drivers
 curl https://get.docker.com | sh
 sudo systemctl --now enable docker
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
@@ -28,28 +28,33 @@ sudo systemctl stop docker
 sudo systemctl edit docker --full
 sudo mkdir -p /mnt/lib/docker  # use of larger mounted storage space is required
 # change ExecStart line -> ExecStart=/usr/bin/dockerd -g /mnt/lib/docker -H fd:// --containerd=/run/containerd/containerd.sock
-sudo systemctl restart docker
+sudo usermod -aG docker $USER
+newgrp docker
+sudo reboot
 ```
 
 # Getting Source and Model Weights
 ```bash
-cd game-paint/app/model
+sudo mkdir /mnt/images  # image storage path
+
+# from game-paint/server directory
+pushd app/model
 git clone 'https://github.com/openai/CLIP'
 git clone 'https://github.com/CompVis/taming-transformers'
 
-sudo mkdir /mnt/images  # image storage path
 mkdir checkpoints
 curl -L -o checkpoints/vqgan_imagenet_f16_16384.yaml -C - 'https://heibox.uni-heidelberg.de/d/a7530b09fed84f80a887/files/?p=%2Fconfigs%2Fmodel.yaml&dl=1' #ImageNet 16384
 curl -L -o checkpoints/vqgan_imagenet_f16_16384.ckpt -C - 'https://heibox.uni-heidelberg.de/d/a7530b09fed84f80a887/files/?p=%2Fckpts%2Flast.ckpt&dl=1' #ImageNet 16384
+popd
 ```
 
 # Build Docker Image
 ```bash
 # build docker image
-sudo docker build -t game-paint .
+docker build -t game-paint .
 
 # verify setup
-sudo docker run --gpus all --rm game-paint python -c "import torch; assert torch.cuda.is_available(); print(f'num_gpus: {torch.cuda.device_count()}'); print(torch.cuda.get_device_name(0))"
+docker run --gpus all --rm game-paint python -c "import torch; assert torch.cuda.is_available(); print(f'num_gpus: {torch.cuda.device_count()}'); print(torch.cuda.get_device_name(0))"
 # should return
 # num_gpus: 1
 # Tesla V100-PCIE-16GB
