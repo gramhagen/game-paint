@@ -9,7 +9,6 @@ class ImageGenerator():
     def predict(self):
         return self.image_to_byte_array(Image.open(self.image_path))
 
-
     def image_to_byte_array(self, image:Image):
         imgByteArr = io.BytesIO()
         image.save(imgByteArr, format=image.format)

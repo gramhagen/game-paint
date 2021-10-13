@@ -199,3 +199,5 @@ GamepAInt_Unity/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
 # Temporary auto-generated Android Assets
 GamepAInt_Unity/[Aa]ssets/[Ss]treamingAssets/aa.meta
 GamepAInt_Unity/[Aa]ssets/[Ss]treamingAssets/aa/*
+
+.vscode/
