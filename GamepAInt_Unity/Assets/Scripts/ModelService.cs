@@ -6,12 +6,15 @@ using UnityEngine;
 
 namespace GamePaint
 {
-    public class ModelService : MonoBehaviour
+    public class ModelService
     {
+        private static ModelService instance;
+        
         private Dictionary<string, object> cachedModelOutputs; // Replace object typing with something more appropriate to image file extension/Unity once known
 
-        public static async Task<bool> QueryModelServer(string searchInput)
+        private async Task<bool> QQueryModelServer(string searchInput)
         {
+            Debug.Log("bzl: QueryModelServer started");
             if (true) // !cachedModelOutputs.ContainsKey(searchInput)
             {
                 try
@@ -19,6 +22,7 @@ namespace GamePaint
                     // query model endpoint using searchInput
                     // subscribe to Observable and set image
                     await Task.Delay(3000);
+                    Debug.Log("bzl: QueryModelServer finished");
                 } catch (Exception)
                 {
                     // handle exception
@@ -29,10 +33,28 @@ namespace GamePaint
             return true;
         }
 
+        private static ModelService Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new ModelService();
+                    instance.cachedModelOutputs = new Dictionary<string, object>();
+                }
+
+                return instance;
+            }
+        }
+
+        public static async Task<bool> QueryModelServer(string searchInput)
+        {
+            return await Instance.QQueryModelServer(searchInput);
+        }
+
         public static object GetModelOutput(string searchInput)
         {
-            // connect to cached store somehow, singleton pattern did not work http://www.unitygeek.com/unity_c_singleton/
-            return null;
+            return Instance.cachedModelOutputs.ContainsKey(searchInput) ? Instance.cachedModelOutputs[searchInput] : null;
         }
     }
 }
