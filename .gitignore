@@ -199,3 +199,10 @@ GamepAInt_Unity/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
 # Temporary auto-generated Android Assets
 GamepAInt_Unity/[Aa]ssets/[Ss]treamingAssets/aa.meta
 GamepAInt_Unity/[Aa]ssets/[Ss]treamingAssets/aa/*
+
+.vscode/
+server/app/model/checkpoints/
+server/app/model/CLIP/
+server/app/taming/
+server/app/model/taming-transformers/
+
