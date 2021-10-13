@@ -12,7 +12,7 @@ namespace GamePaint
 
         public async void Search()
         {
-            await ModelService.QueryModelServer("Dog");
+            await ModelService.QueryModelServer();
             SceneManager.LoadScene("ARArtScene");
         }
 

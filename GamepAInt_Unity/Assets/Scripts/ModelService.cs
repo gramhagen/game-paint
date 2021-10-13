@@ -12,17 +12,19 @@ namespace GamePaint
         
         private Dictionary<string, object> cachedModelOutputs; // Replace object typing with something more appropriate to image file extension/Unity once known
 
-        private async Task<bool> QQueryModelServer(string searchInput)
+        private string currSearchTerm;
+
+        private async Task<bool> _QueryModelServer(string searchInput)
         {
-            Debug.Log("bzl: QueryModelServer started");
-            if (true) // !cachedModelOutputs.ContainsKey(searchInput)
+            Debug.Log("QueryModelServer started. Current search term: " + currSearchTerm);
+            if (!cachedModelOutputs.ContainsKey(currSearchTerm)) // !cachedModelOutputs.ContainsKey(searchInput)
             {
                 try
                 {
                     // query model endpoint using searchInput
                     // subscribe to Observable and set image
                     await Task.Delay(3000);
-                    Debug.Log("bzl: QueryModelServer finished");
+                    Debug.Log("QueryModelServer finished");
                 } catch (Exception)
                 {
                     // handle exception
@@ -47,14 +49,26 @@ namespace GamePaint
             }
         }
 
-        public static async Task<bool> QueryModelServer(string searchInput)
+        public static async Task<bool> QueryModelServer()
         {
-            return await Instance.QQueryModelServer(searchInput);
+            return await Instance._QueryModelServer(Instance.currSearchTerm);
         }
 
-        public static object GetModelOutput(string searchInput)
+        public static void SetCurrentSearchTerm(string searchInput)
         {
-            return Instance.cachedModelOutputs.ContainsKey(searchInput) ? Instance.cachedModelOutputs[searchInput] : null;
+            Debug.Log("Current search term set to: " + searchInput);
+            Instance.currSearchTerm = searchInput;
+        }
+
+        public static object GetModelOutput()
+        {
+            var currSearchTerm = Instance.currSearchTerm;
+            if (!string.IsNullOrEmpty(currSearchTerm))
+            {
+                return Instance.cachedModelOutputs.ContainsKey(currSearchTerm) ? Instance.cachedModelOutputs[currSearchTerm] : null;
+            }
+
+            return null;
         }
     }
 }
