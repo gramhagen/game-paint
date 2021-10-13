@@ -201,3 +201,8 @@ GamepAInt_Unity/[Aa]ssets/[Ss]treamingAssets/aa.meta
 GamepAInt_Unity/[Aa]ssets/[Ss]treamingAssets/aa/*
 
 .vscode/
+server/app/model/checkpoints/
+server/app/model/CLIP/
+server/app/taming/
+server/app/model/taming-transformers/
+

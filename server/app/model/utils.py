@@ -10,7 +10,7 @@ import sys
 
 # pip install taming-transformers doesn't work with Gumbel, but does not yet work with coco etc
 # appending the path does work with Gumbel, but gives ModuleNotFoundError: No module named 'transformers' for coco etc
-sys.path.append('taming-transformers')
+sys.path.append('model/taming-transformers')
 
 from omegaconf import OmegaConf
 from taming.models import cond_transformer, vqgan
@@ -26,7 +26,7 @@ torch.backends.cudnn.benchmark = False		# NR: True is a bit faster, but can lead
 
 from torch_optimizer import DiffGrad, AdamP, RAdam
 
-from CLIP import clip
+from model.CLIP import clip
 import kornia.augmentation as K
 import numpy as np
 import imageio

@@ -25,7 +25,7 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 from subprocess import Popen, PIPE
 import re
 
-from utils import *
+from model.utils import *
 
 
 # Check for GPU and reduce the default image size if low VRAM
@@ -36,7 +36,7 @@ elif get_device_properties(0).total_memory <= 2 ** 33:  # 2 ** 33 = 8,589,934,59
     default_image_size = 318  # <8GB VRAM
 
 
-def load_model(cuda_device=0, vqgan_config="checkpoints/vqgan_imagenet_f16_16384.yaml", vqgan_checkpoint="checkpoints/vqgan_imagenet_f16_16384.ckpt"):
+def load_model(cuda_device=0, vqgan_config="model/checkpoints/vqgan_imagenet_f16_16384.yaml", vqgan_checkpoint="model/checkpoints/vqgan_imagenet_f16_16384.ckpt"):
     device = torch.device(cuda_device)
     return load_vqgan_model(vqgan_config, vqgan_checkpoint, gumbel=False).to(device)
 
