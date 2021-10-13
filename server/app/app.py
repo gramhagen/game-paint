@@ -9,7 +9,7 @@ from fastapi.responses import Response
 from model.vqgan_clip import load_model, load_perceptor, generate
 
 
-IMAGE_PATH = Path("/mnt/images")
+IMAGE_PATH = Path("/images")
 
 app = FastAPI()
 model = load_model()

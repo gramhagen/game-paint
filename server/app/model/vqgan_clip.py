@@ -28,12 +28,7 @@ import re
 from model.utils import *
 
 
-# Check for GPU and reduce the default image size if low VRAM
-default_image_size = 512  # >8GB VRAM
-if not torch.cuda.is_available():
-    default_image_size = 256  # no GPU found
-elif get_device_properties(0).total_memory <= 2 ** 33:  # 2 ** 33 = 8,589,934,592 bytes = 8 GB
-    default_image_size = 318  # <8GB VRAM
+IMAGE_SIZE = 128
 
 
 def load_model(cuda_device=0, vqgan_config="model/checkpoints/vqgan_imagenet_f16_16384.yaml", vqgan_checkpoint="model/checkpoints/vqgan_imagenet_f16_16384.ckpt"):
@@ -55,7 +50,7 @@ def generate(
     prompts=None,
     iterations=500, 
     save_every=500, 
-    size=[default_image_size, default_image_size],
+    size=[IMAGE_SIZE, IMAGE_SIZE],
     gumbel=False,
     ):
 
@@ -65,7 +60,7 @@ def generate(
     # Add the arguments
     vq_parser.add_argument("-p",    "--prompts", type=str, help="Text prompts", default=None, dest='prompts')
     vq_parser.add_argument("-ip",   "--image_prompts", type=str, help="Image prompts / target image", default=[], dest='image_prompts')
-    vq_parser.add_argument("-s",    "--size", nargs=2, type=int, help="Image size (width height) (default: %(default)s)", default=[default_image_size,default_image_size], dest='size')
+    vq_parser.add_argument("-s",    "--size", nargs=2, type=int, help="Image size (width height) (default: %(default)s)", default=[IMAGE_SIZE,IMAGE_SIZE], dest='size')
     vq_parser.add_argument("-ii",   "--init_image", type=str, help="Initial image", default=None, dest='init_image')
     vq_parser.add_argument("-in",   "--init_noise", type=str, help="Initial noise image (pixels or gradient)", default=None, dest='init_noise')
     vq_parser.add_argument("-iw",   "--init_weight", type=float, help="Initial weight", default=0., dest='init_weight')
