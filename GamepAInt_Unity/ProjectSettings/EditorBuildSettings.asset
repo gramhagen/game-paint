@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/UI.unity
     guid: 4cc252810c2251c4fa827c0f233ab1ce
   - enabled: 1
-    path: Assets/ARArtAssets/Scenes/ARArtScene.unity
+    path: Assets/Scenes/ARArtScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects:
     Unity.XR.WindowsMR.Settings: {fileID: 11400000, guid: 744b813df90924c169af73489b8325de,
