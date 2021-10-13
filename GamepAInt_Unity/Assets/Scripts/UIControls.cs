@@ -10,22 +10,15 @@ namespace GamePaint
     public class UIControls : MonoBehaviour
     {
 
-        public async Task Search()
+        public async void Search()
         {
-            if (await ModelService.Query("Dog"))
-            {
-                SceneManager.LoadScene("ARArtScene");
-            }
+            await ModelService.QueryModelServer("Dog");
+            SceneManager.LoadScene("ARArtScene");
         }
 
         public void MainMenu()
         {
             SceneManager.LoadScene("UI");
-        }
-
-        public void TestDummyMethod()
-        {
-            SceneManager.LoadScene("ARArtScene");
         }
     }
 }
