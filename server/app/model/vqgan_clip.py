@@ -3,10 +3,14 @@
 # Adapted from https://github.com/nerdyrodent/VQGAN-CLIP/blob/main/generate.py
 
 import argparse
+import os
 import random
 from urllib.request import urlopen
+
+import imageio
+import numpy as np
+from pydantic import BaseModel
 from tqdm import tqdm
-import os
 
 import torch
 from torch.nn import functional as F
@@ -15,9 +19,6 @@ from torchvision.transforms import functional as TF
 from torch.cuda import get_device_properties
 torch.backends.cudnn.benchmark = False		# NR: True is a bit faster, but can lead to OOM. False is more deterministic.
 #torch.use_deterministic_algorithms(True)	# NR: grid_sampler_2d_backward_cuda does not have a deterministic implementation
-
-import numpy as np
-import imageio
 
 from PIL import ImageFile, Image, PngImagePlugin, ImageChops
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -29,6 +30,42 @@ from model.utils import *
 
 
 IMAGE_SIZE = 128
+
+class Args(BaseModel):
+    prompts: str = None
+    image_prompts: list = []
+    size: list = [IMAGE_SIZE, IMAGE_SIZE]
+    init_image: str = None
+    init_noise: str = None
+    init_weight: float = 0.
+    clip_model: str = "ViT-B/32"
+    vqgan_config: str = "model/checkpoints/vqgan_imagenet_f16_16384.yaml"
+    vqgan_checkpoint: str = "model/checkpoints/vqgan_imagenet_f16_16384.yaml"
+    noise_prompt_seeds: list = []
+    noise_prompt_weights: list = []
+    step_size: float = 0.1
+    cut_method: str = "latest"
+    cutn: int = 32
+    cut_pow: float = 1.
+    seed: int = None
+    optimiser: str = "Adam"
+    output: str = "output.png"
+    make_video: bool = False
+    make_zoom_video: bool = False
+    zoom_start: int = 0
+    zoom_frequency: int = 10
+    zoom_scale: float = 0.99
+    zoom_shift_x: int = 0
+    zoom_shift_y: int = 0
+    prompt_frequency: int = 0
+    video_length: float = 10.
+    output_video_fps: float = 0.
+    input_video_fps: float = 15.
+    cudnn_determinism: bool = False
+    augments: list = []
+    video_style_dir: str = None
+    cuda_device: str = "cuda:0"
+
 
 
 def load_model(cuda_device=0, vqgan_config="model/checkpoints/vqgan_imagenet_f16_16384.yaml", vqgan_checkpoint="model/checkpoints/vqgan_imagenet_f16_16384.ckpt"):
@@ -46,7 +83,7 @@ def generate(
     model,
     perceptor,
     output_path="output.png",
-    cuda_device=0,
+    cuda_device="cuda:0",
     prompts=None,
     iterations=500, 
     save_every=500, 
@@ -94,7 +131,8 @@ def generate(
 
 
     # Execute the parse_args() method
-    args = vq_parser.parse_args()
+    # args = vq_parser.parse_args()
+    args = Args()
 
     if not prompts and not args.image_prompts:
         raise Exception("No prompt received")
