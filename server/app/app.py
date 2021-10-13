@@ -3,7 +3,9 @@ import json
 from pathlib import Path
 from uuid import uuid4
 
-from fastapi import BackgroundTasks, FastAPI
+from typing import Optional
+
+from fastapi import BackgroundTasks, FastAPI, Header, HTTPException, status
 from fastapi.responses import Response
 from PIL import Image
 from pydantic import BaseModel
@@ -13,6 +15,7 @@ from model.vqgan_clip import load_model, load_perceptor, generate
 
 
 IMAGE_PATH = Path("/images")
+TOKEN = "910350ecee704db58c6a8abe6bb96fb1"
 
 
 class TextPrompt(BaseModel):
@@ -28,14 +31,22 @@ model = load_model()
 perceptor = load_perceptor()
 
 
+def validate_token(token):
+    if token != TOKEN:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect Token"
+        )
+
 @app.get("/")
-def status():
+def get_status():
     return "Server is up!"
 
 
 @app.post("/predict")
-async def predict(text: TextPrompt, tasks: BackgroundTasks):
+async def predict(text: TextPrompt, tasks: BackgroundTasks, token: Optional[str] = Header(None)):
     """ Return image id for model output """
+    validate_token(token)
     ref = ImageRef(image_id=uuid4().hex)
     image_dir = IMAGE_PATH.joinpath(ref.image_id)
     image_dir.mkdir()
@@ -49,7 +60,6 @@ async def predict(text: TextPrompt, tasks: BackgroundTasks):
         cuda_device="cuda:0",
     )
     return {
-        "status": "SUCCESS", 
         "data": ref
     }
 
@@ -67,8 +77,9 @@ async def predict(text: TextPrompt, tasks: BackgroundTasks):
     # https://github.com/tiangolo/fastapi/issues/3258
     response_class=Response,
 )
-async def retrieve(ref: ImageRef):
+async def retrieve(ref: ImageRef, token: Optional[str] = Header(None)):
     """ Return generated image from the model """
+    validate_token(token)
     image_byte_array = BytesIO()
     image = Image.open(IMAGE_PATH.joinpath(ref.image_id, "1.png"))
     image.save(image_byte_array, format=image.format)
