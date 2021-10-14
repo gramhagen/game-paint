@@ -90,16 +90,19 @@ namespace GamePaint
             //var file = Resources.Load(resourcePath);
             var tex = new Texture2D(2, 2);
             tex = (Texture2D)Resources.Load("loading1.jpg") as Texture2D;
+            // for planes - instantiatedFrameObject.GetComponent<Renderer>().material.mainTexture = tex;
             //tex.LoadImage(file);
 
+            // for cubes?
             Material myNewMaterial = new Material(Shader.Find("Standard"));
             myNewMaterial.mainTexture = tex;
             myNewMaterial.SetTexture("_MainTex", tex);
+            
             instantiatedFrameObject.GetComponent<MeshRenderer>().material = myNewMaterial;
 
             
             /*
-             * Using web request to read in the image 
+             * Using web request methods to read in the image 
             using (var uwr = UnityWebRequestTexture.GetTexture(url))
             {
                 yield return uwr.SendWebRequest();
