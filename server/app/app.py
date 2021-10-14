@@ -59,9 +59,7 @@ async def predict(text: TextPrompt, tasks: BackgroundTasks, token: Optional[str]
         prompts=f"{text.prompt}|unreal engine",
         cuda_device="cuda:0",
     )
-    return {
-        "data": ref
-    }
+    return ref
 
 
 @app.post("/retrieve",
