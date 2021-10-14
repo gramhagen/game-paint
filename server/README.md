@@ -1,6 +1,14 @@
 # Hardware
 Deploy Azure VM - Ubuntu 20.04 - NC6v3
 
+## Attach data disk to VM
+Follow instructions at https://docs.microsoft.com/en-us/azure/virtual-machines/linux/attach-disk-portal
+```bash
+sudo mkdir -p /mnt/lib/docker
+sudo mount /dev/sdc1 /mnt/lib/docker
+```
+
+
 # Installation
 ```bash
 # Install CUDA drivers
@@ -23,7 +31,6 @@ sudo apt-get update
 sudo apt-get install -y nvidia-docker2
 
 # Configure Docker
-sudo mkdir -p /mnt/lib/docker  # use of larger mounted storage space is required
 sudo systemctl stop docker 
 sudo systemctl edit docker --full
 # change ExecStart line -> ExecStart=/usr/bin/dockerd -g /mnt/lib/docker -H fd:// --containerd=/run/containerd/containerd.sock
