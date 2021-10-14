@@ -8,7 +8,8 @@ public class ChangeScene : MonoBehaviour
 
     public void Play()
     {
-        SceneManager.LoadScene("ARArtScene");
+        //   SceneManager.LoadScene("ARArtScene");
+        SceneManager.LoadScene("GetImageScene");
     }
 
     public void MainMenu()
