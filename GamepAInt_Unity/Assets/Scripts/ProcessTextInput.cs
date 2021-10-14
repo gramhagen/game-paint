@@ -7,16 +7,19 @@ namespace GamePaint
 {
     public class ProcessTextInput : MonoBehaviour
     {
+        public Slider progressBar;
+
         void Start()
         {
             var input = gameObject.GetComponent<InputField>();
             input.onEndEdit.AddListener(SubmitText);
         }
 
-        private void SubmitText(string arg0)
+        private void SubmitText(string text)
         {
             // TODO search term validation
-            ModelService.SetCurrentSearchTerm(arg0);
+            ModelService.SetCurrentSearchTerm(text);
+            ModelService.SetLoadingBar(progressBar);
         }
     }
 }
