@@ -55,7 +55,7 @@ namespace GamePaint
         private Slider progressBar;
         private static ModelService instance;
         private string currSearchTerm;
-        private string outputPath = Application.persistentDataPath + "/output.png";
+        private byte[] modelOutput;
 
         [Serializable]
         public class TextPrompt
@@ -117,9 +117,7 @@ namespace GamePaint
 
             var retrieveRequest = new UnityWebRequest(SERVER_URL + "retrieve", "POST");
             await Post(retrieveRequest, JsonUtility.ToJson(imageRef));
-            var retrieveResult = retrieveRequest.downloadHandler.data;
-
-            File.WriteAllBytes(outputPath, retrieveResult);
+            modelOutput = retrieveRequest.downloadHandler.data;
             return true;
         }
 
@@ -152,9 +150,9 @@ namespace GamePaint
             Instance.currSearchTerm = searchInput;
         }
 
-        public static string GetModelOutput()
+        public static byte[] GetModelOutput()
         {
-            return Instance.outputPath;
+            return Instance.modelOutput;
         }
     }
 }
