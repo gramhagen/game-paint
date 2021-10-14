@@ -1,7 +1,10 @@
 using System.Collections;
+using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 namespace GamePaint
@@ -17,6 +20,10 @@ namespace GamePaint
 
         private bool frameCreated = false;
         private GameObject instantiatedFrameObject;
+
+        private bool defualtFileFlag = false;
+        private string defaultFilePath = "loading1.jpg";
+        private string homeFilePath = "sampleImage.jpg";
 
 
         private List<ARRaycastHit> arRaycastHits = new List<ARRaycastHit>();
@@ -38,10 +45,12 @@ namespace GamePaint
                             if (frameCreated)
                             {
                                 instantiatedFrameObject.transform.position = pose.position;
+                                flipImage();
                             }
                             else
                             {
                                 CreateCube(pose.position);
+                                flipImage();
                                 return;
                             }
                         }
@@ -57,42 +66,60 @@ namespace GamePaint
                     }
                 }
             }
+        }
 
-            /*
-            if (Input.touchCount > 0)
+
+
+        private void flipImage()
+        {
+            string url = "";
+            string resourcePath = "";
+            if (defualtFileFlag)
             {
-                var touch = Input.GetTouch(0);
-                if (touch.phase == TouchPhase.Ended)
-                {
-                    if (Input.touchCount == 1)
-                    {
-                        if (!frameCreated)
-                        {
-                            //Rraycast Planes
-                            if (arRaycastManager.Raycast(touch.position, arRaycastHits))
-                            {
-                                var pose = arRaycastHits[0].pose;
-                                CreateCube(pose.position);
-                                // TogglePlaneDetection(false);
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            var pose = arRaycastHits[0].pose;
-                            instantiatedFrameObject.transform.position = pose.position;
-                            return;
-                        }
+                url = Path.Combine(Application.streamingAssetsPath, homeFilePath);
+                resourcePath = homeFilePath;
+                defualtFileFlag = false;
+            }
+            else
+            {
+                url = Path.Combine(Application.streamingAssetsPath, defaultFilePath);
+                resourcePath = defaultFilePath;
+                defualtFileFlag = true;
+            }
 
-                        Ray ray = Camera.main.ScreenPointToRay(touch.position);
-                        //if (Physics.Raycast(ray, out RaycastHit hit))
-                        //{
-                        //    if (hit.collider.tag == "frame")
-                        //    {
-                        //        PickImage();
-                        //    }
-                        //}
-                    }
+            //var file = Resources.Load(resourcePath);
+            var tex = new Texture2D(2, 2);
+            tex = (Texture2D)Resources.Load("loading1.jpg") as Texture2D;
+            //tex.LoadImage(file);
+
+            Material myNewMaterial = new Material(Shader.Find("Standard"));
+            myNewMaterial.mainTexture = tex;
+            myNewMaterial.SetTexture("_MainTex", tex);
+            instantiatedFrameObject.GetComponent<MeshRenderer>().material = myNewMaterial;
+
+            
+            /*
+             * Using web request to read in the image 
+            using (var uwr = UnityWebRequestTexture.GetTexture(url))
+            {
+                yield return uwr.SendWebRequest();
+
+                if ((uwr.result == UnityWebRequest.Result.ConnectionError) || (uwr.result == UnityWebRequest.Result.ProtocolError))
+                {
+                    Debug.Log(uwr.error);
+                }
+                else
+                {
+                    // Get downloaded texture
+                    var texture = DownloadHandlerTexture.GetContent(uwr);
+                    //_Material.SetTexture("_MainTex", texture);
+                    //Find the Standard Shader
+                    Material myNewMaterial = new Material(Shader.Find("Standard"));
+                    //Set Texture on the material
+                    myNewMaterial.SetTexture("_MainTex", texture);
+                    myNewMaterial.mainTexture = texture;
+
+                    instantiatedFrameObject.GetComponent<MeshRenderer>().material = myNewMaterial;
                 }
             }
             */

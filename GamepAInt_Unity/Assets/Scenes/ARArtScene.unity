@@ -381,7 +381,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   arRaycastManager: {fileID: 388525033}
   arPlaneManager: {fileID: 388525032}
-  framePrefab: {fileID: 7659888865544012905, guid: 5ff519d311d348443bfdd1dde7a3a4d1,
+  framePrefab: {fileID: 7387038261094194341, guid: 70d4ecd45944198459d91922032ff215,
     type: 3}
   canvas: {fileID: 0}
   img: {fileID: 0}
