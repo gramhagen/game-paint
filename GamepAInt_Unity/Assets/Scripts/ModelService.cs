@@ -50,12 +50,12 @@ namespace GamePaint
     {
         const string SERVER_URL = "http://game-paint-server.southcentralus.cloudapp.azure.com:8000/";
         const string SERVER_TOKEN = "910350ecee704db58c6a8abe6bb96fb1";
-        const int WAIT_SECONDS = 50;
+        const int WAIT_SECONDS = 55;
 
         private Slider progressBar;
         private static ModelService instance;
         private string currSearchTerm;
-        private string outputPath = Application.dataPath + "/../output.png";
+        private byte[] modelOutput;
 
         [Serializable]
         public class TextPrompt
@@ -105,6 +105,7 @@ namespace GamePaint
             Debug.Log("Predict output: " + predictResult);
             ImageRef imageRef = ImageRef.FromJson(predictResult);
 
+            progressBar.value = 0f;
             var progressBarCG = progressBar.GetComponent<CanvasGroup>();
             progressBarCG.alpha = 1;
             for (int i = 1; i <= WAIT_SECONDS; i++)
@@ -116,9 +117,7 @@ namespace GamePaint
 
             var retrieveRequest = new UnityWebRequest(SERVER_URL + "retrieve", "POST");
             await Post(retrieveRequest, JsonUtility.ToJson(imageRef));
-            var retrieveResult = retrieveRequest.downloadHandler.data;
-
-            File.WriteAllBytes(outputPath, retrieveResult);
+            modelOutput = retrieveRequest.downloadHandler.data;
             return true;
         }
 
@@ -151,9 +150,9 @@ namespace GamePaint
             Instance.currSearchTerm = searchInput;
         }
 
-        public static string GetModelOutput()
+        public static byte[] GetModelOutput()
         {
-            return Instance.outputPath;
+            return Instance.modelOutput;
         }
     }
 }

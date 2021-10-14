@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
 using UnityEngine.UI;
 
 namespace GamePaint
@@ -11,24 +13,12 @@ namespace GamePaint
         public ARRaycastManager arRaycastManager;
         public ARPlaneManager arPlaneManager;
         public GameObject framePrefab;
-        // public Button resetButton;
 
-        private bool frameCreated = false;
-        private GameObject instantiatedFrameObject;
+        private GameObject frameObject;
 
         private List<ARRaycastHit> arRaycastHits = new List<ARRaycastHit>();
 
-        /*
-        private void Awake()
-        {
-            resetButton.onClick.RemoveAllListeners();
-            resetButton.onClick.AddListener(() =>
-            {
-                DeleteCube(instantiatedFrameObject);
-            });
-        }
-        */
-
+        // Called on loop (detects any touch on the plane on screen)
         void Update()
         {
             if (Input.touchCount > 0)
@@ -38,65 +28,29 @@ namespace GamePaint
                 {
                     if (Input.touchCount == 1)
                     {
-                        if (!frameCreated)
+                        //Raycast Planes
+                        if (arRaycastManager.Raycast(touch.position, arRaycastHits, TrackableType.PlaneWithinPolygon))
                         {
-                            //Rraycast Planes
-                            if (arRaycastManager.Raycast(touch.position, arRaycastHits))
+                            // Creates or Moves the frame to the target location
+                            var pose = arRaycastHits[0].pose;
+                            if (frameObject != null)
                             {
-                                var pose = arRaycastHits[0].pose;
-                                CreateCube(pose.position);
-                                TogglePlaneDetection(false);
-                                return;
+                                frameObject.transform.position = pose.position;
+                                frameObject.transform.rotation = pose.rotation;
                             }
-                        }
-
-                        Ray ray = Camera.main.ScreenPointToRay(touch.position);
-                        if (Physics.Raycast(ray, out RaycastHit hit))
-                        {
-                            if (hit.collider.tag == "frame")
+                            else
                             {
-                                PickImage();
+                                frameObject = Instantiate(framePrefab, pose.position, pose.rotation);
+
+                                var tex = new Texture2D(2, 2);
+                                tex.LoadImage(ModelService.GetModelOutput());
+                                frameObject.GetComponent<MeshRenderer>().material.SetTexture("_MainTex", tex);
+                                frameObject.transform.Rotate(0.0f, 180.0f, 0.0f);
                             }
                         }
                     }
                 }
             }
-        }
-
-        private void CreateCube(Vector3 position)
-        {
-            instantiatedFrameObject = Instantiate(framePrefab, position, Quaternion.identity);
-            frameCreated = true;
-            // resetButton.gameObject.SetActive(true);
-        }
-
-        private void PickImage()
-        {
-            NativeGallery.GetImageFromGallery(HandleMediaPickCallback, "Pick Image for the AR Frame");
-        }
-
-        private void HandleMediaPickCallback(string path)
-        {
-            Texture2D image = NativeGallery.LoadImageAtPath(path);
-            instantiatedFrameObject.GetComponentInChildren<RawImage>().texture = image;
-        }
-
-        private void TogglePlaneDetection(bool state)
-        {
-            foreach (var plane in arPlaneManager.trackables)
-            {
-                plane.gameObject.SetActive(state);
-            }
-            arPlaneManager.enabled = state;
-        }
-
-
-        public void DeleteCube(GameObject cubeObject)
-        {
-            Destroy(cubeObject);
-            // resetButton.gameObject.SetActive(false);
-            frameCreated = false;
-            TogglePlaneDetection(true);
         }
     }
 }
