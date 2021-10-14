@@ -29,6 +29,7 @@ namespace GamePaint
         private List<ARRaycastHit> arRaycastHits = new List<ARRaycastHit>();
 
 
+        // Called on loop (detects any touch on the plane on screen)
         void Update()
         {
             if (Input.touchCount > 0)
@@ -41,6 +42,7 @@ namespace GamePaint
                         //Rraycast Planes
                         if (arRaycastManager.Raycast(touch.position, arRaycastHits))
                         {
+                            // Creates or Moves the frame to the target location
                             var pose = arRaycastHits[0].pose;
                             if (frameCreated)
                             {
@@ -55,6 +57,7 @@ namespace GamePaint
                             }
                         }
 
+                        // This has never deleted the cube? ignore
                         Ray ray = Camera.main.ScreenPointToRay(touch.position);
                         if (Physics.Raycast(ray, out RaycastHit hit))
                         {
@@ -70,6 +73,7 @@ namespace GamePaint
 
 
 
+        // This tries to read a file, convert to texture/material and apply it to the GameObject. Currently uses a hardcoded path (to the Loading image"
         private void flipImage()
         {
             string url = "";
@@ -102,7 +106,7 @@ namespace GamePaint
 
             
             /*
-             * Using web request methods to read in the image 
+             * Alternate way: Using web request methods to read in the image 
             using (var uwr = UnityWebRequestTexture.GetTexture(url))
             {
                 yield return uwr.SendWebRequest();
@@ -128,6 +132,8 @@ namespace GamePaint
             */
         }
 
+
+        // Ignore, not used. Used to set the RawImage component as per the tutorial
         private void CreateImage(Vector3 position)
         {
             instantiatedFrameObject = Instantiate(framePrefab, Vector3.zero, Quaternion.identity);
@@ -136,6 +142,7 @@ namespace GamePaint
             // instantiatedFrameObject.rectTransform.anchoredPosition = Vector3.zero;
         }
 
+        // Creates the Cube/Plane frame from the chosen Prefab
         private void CreateCube(Vector3 position)
         {
             instantiatedFrameObject = Instantiate(framePrefab, position, Quaternion.identity);
@@ -144,17 +151,20 @@ namespace GamePaint
             // resetButton.gameObject.SetActive(true);
         }
 
+        // Ignore, not used. Used to pick image from user's gallery as per tutorial. not working
         private void PickImage()
         {
             NativeGallery.GetImageFromGallery(HandleMediaPickCallback, "Pick Image for the AR Frame");
         }
 
+        // Ignore, not used. Used to pick image from user's gallery as per tutorial. not working
         private void HandleMediaPickCallback(string path)
         {
             Texture2D image = NativeGallery.LoadImageAtPath(path);
             instantiatedFrameObject.GetComponentInChildren<RawImage>().texture = image;
         }
 
+        // Ignore, not used. Used to stop/start plane detection. Was buggy 
         private void TogglePlaneDetection(bool state)
         {
             foreach (var plane in arPlaneManager.trackables)
@@ -164,7 +174,7 @@ namespace GamePaint
             arPlaneManager.enabled = state;
         }
 
-
+        // Ignore, not used
         public void DeleteCube(GameObject cubeObject)
         {
             Destroy(cubeObject);
