@@ -29,24 +29,20 @@ namespace GamePaint
                     if (Input.touchCount == 1)
                     {
                         //Raycast Planes
-                        if (arRaycastManager.Raycast(touch.position, arRaycastHits, TrackableType.PlaneWithinPolygon))
+                        if (arRaycastManager.Raycast(touch.position, arRaycastHits))
                         {
                             // Creates or Moves the frame to the target location
                             var pose = arRaycastHits[0].pose;
-                            if (frameObject != null)
+                            if (frameObject == null)
                             {
-                                frameObject.transform.position = pose.position;
-                                frameObject.transform.rotation = pose.rotation;
-                            }
-                            else
-                            {
-                                frameObject = Instantiate(framePrefab, pose.position, pose.rotation);
+                                frameObject = Instantiate(framePrefab);
 
                                 var tex = new Texture2D(2, 2);
                                 tex.LoadImage(ModelService.GetModelOutput());
                                 frameObject.GetComponent<MeshRenderer>().material.SetTexture("_MainTex", tex);
                                 frameObject.transform.Rotate(0.0f, 180.0f, 0.0f);
                             }
+                            frameObject.transform.position = pose.position;
                         }
                     }
                 }

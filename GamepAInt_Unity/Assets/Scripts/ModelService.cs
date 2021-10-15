@@ -111,7 +111,7 @@ namespace GamePaint
             for (int i = 1; i <= WAIT_SECONDS; i++)
             {
                 await Task.Delay(1000);
-                progressBar.value = 0.9f * i / WAIT_SECONDS;
+                progressBar.value = (float) i / WAIT_SECONDS;
             }
             progressBarCG.alpha = 0;
 
