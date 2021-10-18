@@ -48,8 +48,8 @@ namespace GamePaint
 
     public class ModelService
     {
-        const string SERVER_URL = "http://game-paint-server.southcentralus.cloudapp.azure.com:8000/";
-        const string SERVER_TOKEN = "910350ecee704db58c6a8abe6bb96fb1";
+        const string SERVER_URL = "<ADD URL TO MODEL SERVER: http://server:8000>";
+        const string SERVER_TOKEN = "<ADD UNIQUE STRING TO MATCH VALUE IN server/app/app.py>";
         const int WAIT_SECONDS = 55;
 
         private Slider progressBar;

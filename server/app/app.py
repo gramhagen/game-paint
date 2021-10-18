@@ -15,7 +15,7 @@ from model.vqgan_clip import load_model, load_perceptor, generate
 
 
 IMAGE_PATH = Path("/images")
-TOKEN = "910350ecee704db58c6a8abe6bb96fb1"
+TOKEN = "<CREATE UNIQUE STRING HERE>"
 
 
 class TextPrompt(BaseModel):
