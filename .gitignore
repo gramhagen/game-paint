@@ -188,7 +188,7 @@ sysinfo.txt
 *.aab
 *.unitypackage
 GamepAInt_Unity/XcodeBuild/
-# GamepAInt_Unity/AndroidBuild/
+GamepAInt_Unity/AndroidBuild/
 
 # Crashlytics generated file
 GamepAInt_Unity/crashlytics-build.properties
