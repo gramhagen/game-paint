@@ -1,6 +1,7 @@
 # TODOs
 
-1. Fix AR object placement to align to plane
+1. Fix AR object position and rotation to align to plane
+1. Add wireframe of shape before clicking 
 1. Improve authorization of request from app to server
 1. Add user login
 1. Support persisting objects for users
